@@ -37,6 +37,23 @@ export default {
       return makeWhiteResponse(whiteFlowType, safeUrl, "panic_mode");
     }
 
+    // === HONEYPOT: ловушки для ботов/краулеров ===
+    var honeypotPaths = [
+      "/robots.txt", "/sitemap.xml", "/sitemap_index.xml",
+      "/admin", "/administrator", "/wp-admin", "/wp-login.php",
+      "/.env", "/.env.local", "/config.php", "/.git/config",
+      "/phpmyadmin", "/pma", "/xmlrpc.php",
+      "/login", "/signin", "/register",
+      "/debug", "/server-status", "/shell", "/cmd",
+      "/backup", "/dump.sql", "/.htaccess", "/.htpasswd",
+    ];
+    var pathname = url.pathname.replace(/\/+$/, "") || "/";
+    for (var i = 0; i < honeypotPaths.length; i++) {
+      if (pathname === honeypotPaths[i] || pathname.startsWith(honeypotPaths[i] + "/")) {
+        return makeWhiteResponse(whiteFlowType, safeUrl, "honeypot:" + pathname);
+      }
+    }
+
     // === ПРОВЕРКА 1: X-Client-Secret ===
     if (secret && clientSecret !== secret) {
       return makeWhiteResponse(whiteFlowType, safeUrl, "no_client_secret");
