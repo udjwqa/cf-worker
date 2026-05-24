@@ -1,0 +1,15 @@
+name = "apk-filter"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# Переменные окружения (заполнить перед деплоем)
+[vars]
+BACKEND_URL = "http://31.76.251.103/engine"
+CLIENT_SECRET = "your-secret-key-here"
+SAFE_URL = "https://play.google.com/store"
+
+# KV namespace (создаётся при первом деплое)
+# Раскомментировать после: wrangler kv namespace create CONFIG
+# [[kv_namespaces]]
+# binding = "CONFIG"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
