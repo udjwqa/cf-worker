@@ -102,7 +102,9 @@ export default {
     });
 
     try {
-      const response = await fetch(originRequest);
+      const response = await fetch(originRequest, {
+        cf: { resolveOverride: undefined },
+      });
       const newResponse = new Response(response.body, response);
       newResponse.headers.set("X-CF-Filtered", "true");
       newResponse.headers.set("X-CF-Filter-Time", String(Date.now() - startTime) + "ms");

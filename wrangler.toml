@@ -4,7 +4,7 @@ compatibility_date = "2024-01-01"
 account_id = "686d8efb278562545fb8c21e920e1478"
 
 [vars]
-BACKEND_URL = "http://31.76.251.103/engine"
+BACKEND_URL = "https://api.threeamigosteam.com/engine"
 CLIENT_SECRET = "5ed315c474084ea436f0e57d1e54ef6f2f647c2f7757a02bdfb3f3339b0d2c0f"
 SAFE_URL = "https://play.google.com/store"
 
