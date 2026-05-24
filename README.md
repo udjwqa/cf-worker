@@ -114,3 +114,42 @@ curl http://localhost:8787/ -H "User-Agent: Googlebot"
 - **Админ-панель** → обновляет KV через Cloudflare API (кнопка "Сохранить")
 - **Кнопка паники** → ставит `PANIC_MODE=true` в KV → весь трафик на белую
 - **FastAPI** → получает только чистый трафик + заголовки X-CF-Country, X-CF-ASN
+
+---
+
+## Honeypot (ловушки для ботов)
+
+Worker блокирует ботов которые сканируют стандартные пути. Легитимное приложение никогда не обращается к `/robots.txt` или `/wp-admin` — значит кто зашёл туда, тот бот.
+
+Блокируемые пути:
+```
+/robots.txt, /sitemap.xml, /admin, /wp-admin, /wp-login.php,
+/.env, /config.php, /.git/config, /phpmyadmin, /xmlrpc.php,
+/login, /signin, /debug, /server-status, /backup, /dump.sql
+```
+
+На Edge (Worker) — мгновенный блок. На бэкенде (FastAPI) — IP автоматически банится в Redis на 7 дней.
+
+---
+
+## Текущий деплой
+
+- **Worker URL:** `https://apk-filter.koskoro.workers.dev`
+- **Backend:** `https://api.threeamigosteam.com/engine`
+- **KV Namespace:** CONFIG (`05d3222196c447998ff472d630b43fa0`)
+- **SSL:** Let's Encrypt на `api.threeamigosteam.com`
+
+---
+
+## Что входит в Этап 1
+
+Этот репозиторий — часть инфраструктурного фундамента:
+
+| Компонент | Что делает | Где |
+|-----------|-----------|-----|
+| **CF Worker** | Edge-фильтрация за 2-5мс | Этот репо |
+| **Nginx** | Reverse proxy, SSL, rate limit, real IP | Сервер 31.76.251.103 |
+| **Redis** | Rate limiting 100 req/min + honeypot баны | Сервер |
+| **Honeypot** | 30+ ловушек, автобан ботов | Worker + FastAPI |
+
+Конфиги Nginx лежат в `nginx/` папке этого репо для удобства деплоя.
